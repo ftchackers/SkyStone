@@ -90,7 +90,7 @@ public class RevColorDistance extends LinearOpMode {
 
         // values is a reference to the hsvValues array.
         final float values[] = hsvValues;
-
+        //
         // sometimes it helps to multiply the raw RGB values with a scale factor
         // to amplify/attentuate the measured values.
         final double SCALE_FACTOR = 255;

@@ -58,7 +58,7 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 public class AutoTest extends LinearOpMode {
 
     // Declare OpMode members.
-    private ElapsedTime runtime = new ElapsedTime();
+    private ElapsedTime runtime = new ElapsedTime();  //
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
 

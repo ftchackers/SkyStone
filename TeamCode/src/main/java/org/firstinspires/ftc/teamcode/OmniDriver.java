@@ -58,7 +58,7 @@ public class OmniDriver extends LinearOpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFrontDrive = null;
-    private DcMotor rightFrontDrive = null;
+    private DcMotor rightFrontDrive = null;  //
     private DcMotor leftBackDrive = null;
     private DcMotor rightBackDrive = null;
 
