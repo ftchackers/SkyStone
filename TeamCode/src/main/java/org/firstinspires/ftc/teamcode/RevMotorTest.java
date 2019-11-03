@@ -52,43 +52,60 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Rev Test", group="Linear Opmode")
+@TeleOp(name="Rev Test", group="Linear Opmode")
 //@Disabled
 public class RevMotorTest extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftRevMotor = null;
-    private DcMotor rightReevMotor = null;
+    Hardware robot           = new Hardware();
 
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        //
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        leftRevMotor = hardwareMap.get(DcMotor.class, "Lrev");
-        rightReevMotor = hardwareMap.get(DcMotor.class, "Rrev");
 
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-        leftRevMotor.setDirection(DcMotor.Direction.REVERSE);
-        rightReevMotor.setDirection(DcMotor.Direction.REVERSE);
+        robot.init(hardwareMap);
+
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
-        leftRevMotor.setPower(0.8);
-        rightReevMotor.setPower(0.8);
-        sleep(1000);
+        // run until the end of the match (driver presses STOP)
+        while (opModeIsActive()) {
 
-        leftRevMotor.setPower(-0.8);
-        rightReevMotor.setPower(-0.8);
-        sleep(1000);
+            // Setup a variable for each drive wheel to save power level for telemetry
+            double power;
 
+
+            // Choose to drive using either Tank Mode, or POV Mode
+            // Comment out the method that's not used.  The default below is POV.
+
+            // POV Mode uses left stick to go forward, and right stick to turn.
+            // - This uses basic math to combine motions and is easier to drive straight.
+             power = -gamepad1.left_stick_y;
+
+            //leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
+            //rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
+
+            // Tank Mode uses one stick to control each wheel.
+            // - This requires no math, but it is hard to drive forward slowly and keep straight.
+            // leftPower  = -gamepad1.left_stick_y ;
+            // rightPower = -gamepad1.right_stick_y ;
+
+            robot.leftRevMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.rightRevMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            // Send calculated power to wheels
+            robot.leftRevMotor.setPower(power);
+            robot.rightRevMotor.setPower(power);
+
+            // Show the elapsed game time and wheel power.
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Motors", "left (%.2f), right (%.2f)", power, power);
+            telemetry.update();
+        }
 
     }
 }

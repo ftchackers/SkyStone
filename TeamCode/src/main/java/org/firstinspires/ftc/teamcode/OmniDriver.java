@@ -57,31 +57,15 @@ public class OmniDriver extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftFrontDrive = null;
-    private DcMotor rightFrontDrive = null;  //
-    private DcMotor leftBackDrive = null;
-    private DcMotor rightBackDrive = null;
+    Hardware robot           = new Hardware();
+
 
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "LFdrive");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "RFdrive");
-
-        leftBackDrive  = hardwareMap.get(DcMotor.class, "LBdrive");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "RBdrive");
-
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        robot.init(hardwareMap);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -109,12 +93,21 @@ public class OmniDriver extends LinearOpMode {
             final double v3 = r * Math.sin(robotAngle) + rightX;
             final double v4 = r * Math.cos(robotAngle) - rightX;
 
-            leftFrontDrive.setPower(v1);
-            rightFrontDrive.setPower(v2);
-            leftBackDrive.setPower(v3);
-            rightBackDrive.setPower(v4);
+            robot.leftFrontDrive.setPower(v1);
+            robot.rightFrontDrive.setPower(v2);
+            robot.leftBackDrive.setPower(v3);
+            robot.rightBackDrive.setPower(v4);
 
 
+            if(gamepad1.left_bumper) {
+                robot.leftServo.setPosition(1);
+                robot.leftServo.setPosition(1);
+            }
+
+            if(gamepad1.right_bumper) {
+                robot.leftServo.setPosition(0);
+                robot.leftServo.setPosition(0);
+            }
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             //telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
